@@ -145,6 +145,7 @@
 
   const createRow = ({name: firstName, surname, phone}) => {
     const tr = document.createElement('tr');
+    tr.classList.add('contact');
 
     const tdDel = document.createElement('td');
     const buttonDel = document.createElement('button');
@@ -229,6 +230,7 @@
       list: table.tbody,
       logo,
       btnAdd: buttonGroup.btns[0],
+      btnDel: buttonGroup.btns[1],
       formOverlay: form.overlay,
       form: form.form,
     };
@@ -251,7 +253,12 @@
 
     const phoneBook = renderPhoneBook(app, title);
 
-    const {list, logo, btnAdd, formOverlay, form} = phoneBook;
+    const {
+      list,
+      logo,
+      btnAdd,
+      formOverlay,
+      btnDel} = phoneBook;
 
     // Функционал
     const allRow = renderContacts(list, data);
@@ -261,26 +268,36 @@
       formOverlay.classList.add('is-visible');
     });
 
-    form.addEventListener('click', event => {
-      event.stopImmediatePropagation();
+    formOverlay.addEventListener('click', e => {
+      const target = e.target;
+      if (target === formOverlay || target.closest('.close')) {
+        formOverlay.classList.remove('is-visible');
+      }
     });
 
-    formOverlay.addEventListener('click', () => {
-      formOverlay.classList.remove('is-visible');
+    btnDel.addEventListener('click', () => {
+      document.querySelectorAll('.delete').forEach(del => {
+        del.classList.toggle('is-visible');
+      });
+
+      list.addEventListener('click', e => {
+        const target = e.target;
+        if (target.closest('.del-icon')) {
+          target.closest('.contact').remove();
+        }
+      });
     });
 
-    document.addEventListener('touchstart', e => {
-      console.log(e.type);
-    });
-
-    document.addEventListener('touchmove', e => {
-      console.log(e.type);
-    });
-
-    document.addEventListener('touchend', e => {
-      console.log(e.type);
-    });
+    setTimeout(() => {
+      const contact = createRow({
+        name: 'Nurzhigit',
+        surname: 'Ongalov',
+        phone: '+77664842429',
+      });
+      list.append(contact);
+    }, 1000);
   };
+
 
   window.phoneBookInit = init;
 }
