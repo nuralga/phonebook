@@ -87,6 +87,7 @@
         <th>Имя</th>
         <th>Фамилия</th>
         <th>Телефон</th>
+        <th>Редактировать</th>
     </tr>
     `);
 
@@ -166,7 +167,14 @@
 
     tdPhone.append(phoneLink);
 
-    tr.append(tdDel, tdName, tdSurName, tdPhone);
+    const tdEdit = document.createElement('td');
+    const btnEdit = document.createElement('button');
+    btnEdit.innerText = 'Редактировать';
+    btnEdit.classList.add('btn', 'btn-warning');
+
+    tdEdit.append(btnEdit);
+
+    tr.append(tdDel, tdName, tdSurName, tdPhone, tdEdit);
     return tr;
   };
 
