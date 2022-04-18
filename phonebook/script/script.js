@@ -84,8 +84,8 @@
     thead.insertAdjacentHTML('beforeend', `
     <tr>
         <th class="delete">Удалить</th>
-        <th>Имя</th>
-        <th>Фамилия</th>
+        <th class="th-sort">Имя</th>
+        <th class="th-sort">Фамилия</th>
         <th>Телефон</th>
         <th>Редактировать</th>
     </tr>
@@ -296,8 +296,45 @@
       });
       list.append(contact);
     }, 1000);
-  };
 
+    const table = document.querySelector('.table ');
+
+    const headers = table.querySelectorAll('.th-sort');
+    const tableBody = table.querySelector('tbody');
+    const rows = tableBody.querySelectorAll('tr');
+
+    const sortColumn = function(index) {
+      const newRows = Array.from(rows);
+
+      newRows.sort((rowA, rowB) => {
+        const cellA = rowA.querySelectorAll('td')[index].innerHTML;
+        const cellB = rowB.querySelectorAll('td')[index].innerHTML;
+
+        switch (true) {
+          case cellA > cellB:
+            return 1;
+          case cellA < cellB:
+            return -1;
+          case cellA === cellB:
+            return 0;
+        }
+      });
+
+      [].forEach.call(rows, (row) => {
+        tableBody.removeChild(row);
+      });
+
+      newRows.forEach((newRow) => {
+        tableBody.appendChild(newRow);
+      });
+    };
+
+    [].forEach.call(headers, (header, index) => {
+      header.addEventListener('click', () => {
+        sortColumn(index);
+      });
+    });
+  };
 
   window.phoneBookInit = init;
 }
