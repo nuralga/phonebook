@@ -2,32 +2,32 @@
 'use strict';
 
 {
-  const data = [
-    {
-      name: 'Иван',
-      surname: 'Петров',
-      phone: '+79514545454',
-    },
-    {
-      name: 'Игорь',
-      surname: 'Семёнов',
-      phone: '+79999999999',
-    },
-    {
-      name: 'Семён',
-      surname: 'Иванов',
-      phone: '+79800252525',
-    },
-    {
-      name: 'Мария',
-      surname: 'Попова',
-      phone: '+79876543210',
-    },
-  ];
+  // working with localStorage
+  const getStorage = key => JSON.parse(localStorage.getItem(key));
+
+  const setStorage = (key, obj) => {
+    const data = getStorage(key);
+    data.push(obj);
+    localStorage.setItem(key, JSON.stringify(data));
+  };
+
+  const arrayRemove = (arr, value) => arr.filter((ele) => ele.phone !== value);
+
+  const removeStorage = number => {
+    let data = getStorage('data');
+    try {
+      data = arrayRemove(data, number);
+      localStorage.setItem('data', JSON.stringify(data));
+    } catch (error) {
+      console.warn(error);
+    }
+  };
+
+  /* / working with localStorage /*/
+
 
   const addContactData = contact => {
-    data.push(contact);
-    console.log('data: ', data);
+    setStorage('data', contact);
   };
 
   const createContainer = () => {
@@ -166,6 +166,7 @@
 
     const tdPhone = document.createElement('td');
     const phoneLink = document.createElement('a');
+    phoneLink.classList.add('tel');
     phoneLink.href = `tel:${phone}`;
     phoneLink.textContent = phone;
 
@@ -285,32 +286,11 @@
       list.addEventListener('click', e => {
         const target = e.target;
         if (target.closest('.del-icon')) {
+          removeStorage(target.parentNode.parentNode.querySelector('.tel').textContent);
           target.closest('.contact').remove();
         }
       });
     });
-  };
-
-  const sortFunc = () => {
-    const getCellValue = function(tr, idx) {
-      return tr.children[idx].innerText || tr.children[idx].textContent;
-    };
-
-    const comparer = function(idx, asc) {
-      return function(a, b) {
-        return function(v1, v2) {
-          return v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2);
-        }(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
-      };
-    };
-
-    document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
-      const table = th.closest('table');
-      const tbody = table.querySelector('tbody');
-      Array.from(tbody.querySelectorAll('tr'))
-          .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-          .forEach(tr => tbody.appendChild(tr));
-    })));
   };
 
   const addContactPage = (contact, list) => {
@@ -343,12 +323,11 @@
       btnDel} = renderPhoneBook(app, title);
 
     // Функционал
-    const allRow = renderContacts(list, data);
+    const allRow = renderContacts(list, getStorage('data'));
     const {closeModal} = modalControl(btnAdd, formOverlay);
     hoverRow(allRow, logo);
 
     deleteControl(btnDel, list);
-    sortFunc();
     formControl(form, list, closeModal);
   };
 

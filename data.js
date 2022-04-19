@@ -1,4 +1,4 @@
-const data = [
+localStorage.setItem('data', JSON.stringify([
   {
     name: 'Иван',
     surname: 'Петров',
@@ -19,4 +19,4 @@ const data = [
     surname: 'Попова',
     phone: '+79876543210',
   },
-];
+]));
