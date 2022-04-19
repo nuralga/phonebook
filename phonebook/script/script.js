@@ -89,8 +89,8 @@
     thead.insertAdjacentHTML('beforeend', `
     <tr>
         <th class="delete">Удалить</th>
-        <th class="th-sort">Имя</th>
-        <th class="th-sort">Фамилия</th>
+        <th class="th-name">Имя</th>
+        <th class="th-surname">Фамилия</th>
         <th>Телефон</th>
         <th>Редактировать</th>
     </tr>
@@ -310,6 +310,33 @@
     });
   };
 
+  const appendSortData = (list, data) => {
+    while (list.firstChild) {
+      list.removeChild(list.firstChild);
+    }
+    data.forEach(element => {
+      const row = createRow(element);
+      list.append(row);
+    });
+  };
+
+  const sortFunc = (list) => {
+    const data = getStorage('data');
+
+    const thName = document.querySelector('.th-name');
+    thName.addEventListener('click', () => {
+      data.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+      localStorage.setItem('data', JSON.stringify(data));
+      appendSortData(list, data);
+    });
+
+    const thSurname = document.querySelector('.th-surname');
+    thSurname.addEventListener('click', () => {
+      data.sort((a, b) => a.surname.toLowerCase().localeCompare(b.surname.toLowerCase()));
+      localStorage.setItem('data', JSON.stringify(data));
+      appendSortData(list, data);
+    });
+  };
 
   const init = (selectorApp, title) => {
     const app = document.querySelector(selectorApp);
@@ -329,6 +356,7 @@
 
     deleteControl(btnDel, list);
     formControl(form, list, closeModal);
+    sortFunc(list);
   };
 
   window.phoneBookInit = init;
