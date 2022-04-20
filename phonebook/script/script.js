@@ -311,6 +311,7 @@
   };
 
   const appendSortData = (list, data) => {
+    console.log('list: ', list);
     while (list.firstChild) {
       list.removeChild(list.firstChild);
     }
@@ -321,10 +322,9 @@
   };
 
   const sortFunc = (list) => {
-    const data = getStorage('data');
-
     const thName = document.querySelector('.th-name');
     thName.addEventListener('click', () => {
+      const data = getStorage('data');
       data.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
       localStorage.setItem('data', JSON.stringify(data));
       appendSortData(list, data);
@@ -332,6 +332,7 @@
 
     const thSurname = document.querySelector('.th-surname');
     thSurname.addEventListener('click', () => {
+      const data = getStorage('data');
       data.sort((a, b) => a.surname.toLowerCase().localeCompare(b.surname.toLowerCase()));
       localStorage.setItem('data', JSON.stringify(data));
       appendSortData(list, data);
